@@ -1,12 +1,16 @@
 
--- hs.loadSpoon("AClock")
--- hs.hotkey.bind({"cmd", "alt", "ctrl"}, "C", function()
---   spoon.AClock:toggleShow()
--- end)
+hs.loadSpoon("SpoonInstall")
 
--- hs.loadSpoon("Cherry")
-hs.loadSpoon('EmmyLua')
-hs.loadSpoon("ReloadConfiguration")
+local spoonDeps = {
+  "EmmyLua", -- intellisense
+  "ReloadConfiguration", -- auto reload on change
+}
+
+for _, spoonDep in ipairs(spoonDeps) do
+  spoon.SpoonInstall:andUse(spoonDep)
+end
+
+
 spoon.ReloadConfiguration:start()
 --shallow copy
 local function copy_table(tb)
@@ -16,20 +20,6 @@ local function copy_table(tb)
   end
   return copied
 end
-
--- function reloadConfig(files)
---   doReload = false
---   for _,file in pairs(files) do
---       if file:sub(-4) == ".lua" then
---           doReload = true
---       end
---   end
---   if doReload then
---       hs.reload()
---   end
--- end
--- myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
--- hs.alert.show("Config loaded")
 
 hyperKeyMods = {"cmd", "alt", "ctrl", "shift"};
 
