@@ -20,9 +20,11 @@ local function ordinal(time)
   end
 end
 
-default_delay = 1500 -- microseconds
+-- default_delay = 1500-- microseconds
+default_delay = 10000-- microseconds
 
-local function keyStroke(keyMods, keyChar)
+local function keyStroke(keyMods, keyChar, delayUs)
+  delayUs = delayUs or default_delay;
   hs.eventtap.keyStroke(keyMods, keyChar, default_delay)
 
   -- hs.eventtap.event.newKeyEvent(keyMods, keyChar, true):post()
@@ -46,12 +48,16 @@ local function writeTime()
   keyStrokes(os.date(hourPart..":%M %p:",  now))
 end
 
+local function writeDate()
+  local now = os.time()
+  local dateStr = os.date("%m/%d/%Y", now)
+  keyStrokes(dateStr)
+end
+
 local function init(keyMods)
   
   hs.hotkey.bind(keyMods, "D", function ()
-    local now = os.time()
-    local dateStr = os.date("%m/%d/%Y", now)
-    keyStrokes(dateStr)
+    writeDate()
   end)
 
   hs.hotkey.bind(keyMods, "N", function ()
@@ -60,8 +66,10 @@ local function init(keyMods)
     keyStroke({}, "down")
     keyStroke({}, "return")
     keyStroke({}, "up")
-    keyStroke({"cmd", "option"}, "0")
+    -- hs.timer.usleep(1000)
+    -- keyStroke({"cmd", "option"}, "0")
     writeTime()
+    hs.timer.usleep(10000)
     keyStroke({}, "return")
     keyStroke({}, "tab")
   end)
@@ -77,15 +85,14 @@ local function init(keyMods)
     local now = os.time()
     local timeTb = os.date("*t", now)
     local dayPart = timeTb["day"]
-    hs.eventtap.keyStroke({"cmd"}, "up", delay)
-    hs.eventtap.keyStroke({}, "return", delay)
-    hs.eventtap.keyStroke({}, "up", delay)
-    hs.eventtap.keyStroke({"cmd", "option"}, "2", delay)
+    keyStroke({"cmd"}, "up")
+    keyStroke({}, "return")
+    keyStroke({}, "up")
+    keyStroke({"cmd", "option"}, "2")
     -- Tues. Dec 27th, 2023
     hs.eventtap.keyStrokes(os.date("%a. %b "..dayPart..ordinal(now)..", %Y",  now))
-    hs.eventtap.keyStroke({}, "return", delay)
-    -- writeTime()
-    -- hs.eventtap.keyStroke({}, "return", delay)
+    hs.timer.usleep(10000)
+    keyStroke({}, "return")
   end)
 end
 

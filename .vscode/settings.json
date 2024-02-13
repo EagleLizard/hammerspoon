@@ -1,3 +1,7 @@
 {
+  // "files.autoSave": "onFocusChange",
+
+  // "files.autoSave": "afterDelay",
+  // "files.autoSaveDelay": 500,
   "Lua.workspace.library": ["/Users/tylerwhited/.hammerspoon/Spoons/EmmyLua.spoon/annotations"]
 }

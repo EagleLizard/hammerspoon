@@ -1,4 +1,6 @@
 
+local printUtil = require('print-util')
+
 hs.loadSpoon("SpoonInstall")
 
 local spoonDeps = {
@@ -21,14 +23,50 @@ local function copy_table(tb)
   return copied
 end
 
-hyperKeyMods = {"cmd", "alt", "ctrl", "shift"};
+hyperKeyMods = {"cmd", "alt", "ctrl", "shift" };
 
 
 googleDocsKeyMods = copy_table(hyperKeyMods);
 print(hyperKeyMods)
-table.insert(googleDocsKeyMods, "J");
+-- table.insert(googleDocsKeyMods, "J");
 local googleDocs = require('google-docs')
 googleDocs.init(googleDocsKeyMods);
+
+
+mouseKeyMods = copy_table(hyperKeyMods)
+
+local mouse = require('mouse')
+mouse.init(mouseKeyMods)
+
+
+-- local emojiKeyMods = copy_table(hyperKeyMods)
+
+-- spoon.Emojis:bindHotkeys({toggle = {hyperKeyMods, 'e'}});
+-- spoon.ColorPicker:bindHotkeys({
+--   show = {hyperKeyMods, 'C'}
+-- })
+
+local function showConfigMessage ()
+  local allScreens = hs.screen.allScreens()
+  local configAlertText = "⚒️ Hammerspoon Configured ⚒️"
+  -- local verticalBanner = string.rep("⚒", string.len(configAlertText))
+  local verticalBanner = "\n"
+  for _, currScreen in pairs(allScreens) do
+    hs.alert.show(
+      (
+        verticalBanner
+        .."\n"
+        ..configAlertText
+        .."\n"
+        ..verticalBanner
+      ),
+      hs.alert.defaultStyle,
+      currScreen
+    )
+  end
+end
+
+showConfigMessage()
 
 
 -- hs.hotkey.bind([ ])
