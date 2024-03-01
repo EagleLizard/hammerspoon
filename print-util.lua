@@ -4,14 +4,30 @@ local function alertAll (alertText)
   local verticalBanner = "\n"
   for _, currScreen in pairs(allScreens) do
     hs.alert.show(
-      alertText,
+      (
+        verticalBanner
+        .."\n"
+        ..alertText
+        .."\n"
+        ..verticalBanner
+      ),
       hs.alert.defaultStyle,
       currScreen
     )
   end
 end
 
+local function alertActive (alertText)
+  local currScreen = hs.mouse.getCurrentScreen()
+  hs.alert.show(
+    alertText,
+    hs.alert.defaultStyle,
+    currScreen
+  )
+end
+
 local printUtil = {
   alertAll = alertAll,
+  alertActive = alertActive,
 }
 return printUtil

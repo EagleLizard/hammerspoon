@@ -14,6 +14,7 @@ end
 
 
 spoon.ReloadConfiguration:start()
+
 --shallow copy
 local function copy_table(tb)
   local copied = {}
@@ -36,7 +37,10 @@ googleDocs.init(googleDocsKeyMods);
 mouseKeyMods = copy_table(hyperKeyMods)
 
 local mouse = require('mouse')
-mouse.init(mouseKeyMods)
+-- mouse.init(mouseKeyMods)
+
+local win = require('win')
+win.init(hyperKeyMods)
 
 
 -- local emojiKeyMods = copy_table(hyperKeyMods)
@@ -49,21 +53,22 @@ mouse.init(mouseKeyMods)
 local function showConfigMessage ()
   local allScreens = hs.screen.allScreens()
   local configAlertText = "⚒️ Hammerspoon Configured ⚒️"
+  printUtil.alertAll(configAlertText)
   -- local verticalBanner = string.rep("⚒", string.len(configAlertText))
-  local verticalBanner = "\n"
-  for _, currScreen in pairs(allScreens) do
-    hs.alert.show(
-      (
-        verticalBanner
-        .."\n"
-        ..configAlertText
-        .."\n"
-        ..verticalBanner
-      ),
-      hs.alert.defaultStyle,
-      currScreen
-    )
-  end
+  -- local verticalBanner = "\n"
+  -- for _, currScreen in pairs(allScreens) do
+  --   hs.alert.show(
+  --     (
+  --       verticalBanner
+  --       .."\n"
+  --       ..configAlertText
+  --       .."\n"
+  --       ..verticalBanner
+  --     ),
+  --     hs.alert.defaultStyle,
+  --     currScreen
+  --   )
+  -- end
 end
 
 showConfigMessage()
