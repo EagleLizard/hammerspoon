@@ -1,16 +1,30 @@
+local function getAlertStr (alertText)
+  local verticalBanner = '\n';
+  local alertStr = (
+    verticalBanner
+    .."\n"
+    ..alertText
+    .."\n"
+    ..verticalBanner
+  )
+  return alertStr;
+end
+
+local function alert(alertText, screen)
+  hs.alert.show(
+    getAlertStr(alertText),
+    hs.alert.defaultStyle,
+    screen
+  )
+end
+
 local function alertAll (alertText)
   local allScreens = hs.screen.allScreens()
-  -- local verticalBanner = string.rep("⚒", string.len(configAlertText))
-  local verticalBanner = "\n"
+  -- local verticalBanner = string.rep("~", string.len(configAlertText))..'\n'
+  -- local verticalBanner = "\n"
   for _, currScreen in pairs(allScreens) do
     hs.alert.show(
-      (
-        verticalBanner
-        .."\n"
-        ..alertText
-        .."\n"
-        ..verticalBanner
-      ),
+      getAlertStr(alertText),
       hs.alert.defaultStyle,
       currScreen
     )
@@ -27,6 +41,7 @@ local function alertActive (alertText)
 end
 
 local printUtil = {
+  alert = alert,
   alertAll = alertAll,
   alertActive = alertActive,
 }

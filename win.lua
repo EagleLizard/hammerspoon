@@ -36,6 +36,8 @@ local function moveMouseDirectional(direction)
   local currScreen = hs.mouse.getCurrentScreen()
   local currIdx = -1
   local nextIdx = -1
+  assert(allScreens ~= nil)
+  assert(currScreen ~= nil)
   for k,v in ipairs(allScreens) do
     if v == currScreen then
       currIdx = k
@@ -56,22 +58,31 @@ local function moveMouseDirectional(direction)
     nextIdx = currIdx + direction
   end
   local nextScreen = allScreens[nextIdx]
+  -- if direction == -1 then
+  --   isCurrScreen = currIdx == 1
+  --   terminalIdx = #allScreens
+  --   nextScreen = currScreen.after()
+  -- else
+  --   isCurrScreen = currIdx == #allScreens
+  --   terminalIdx = 1
+  -- end
+  printUtil.alert('active screen', nextScreen);
   moveMouseRelative(currScreen, nextScreen)
 end
 
 local function init(keyMods)
-  hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function(win, appName)
-    local activeScreen = hs.mouse.getCurrentScreen()
-    local winScreen = win:screen()
-    moveMouseRelative(activeScreen, winScreen)
-  end)
+  -- hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function(win, appName)
+  --   local activeScreen = hs.mouse.getCurrentScreen()
+  --   local winScreen = win:screen()
+  --   moveMouseRelative(activeScreen, winScreen)
+  -- end)
 
   hs.hotkey.bind(keyMods, "left", function ()
-    moveMouseDirectional(-1)
+    moveMouseDirectional(1)
   end)
 
   hs.hotkey.bind(keyMods, "right", function ()
-    moveMouseDirectional(1)
+    moveMouseDirectional(-1)
   end)
 end
 

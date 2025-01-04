@@ -37,7 +37,7 @@ googleDocs.init(googleDocsKeyMods);
 mouseKeyMods = copy_table(hyperKeyMods)
 
 local mouse = require('mouse')
--- mouse.init(mouseKeyMods)
+mouse.init(mouseKeyMods)
 
 local win = require('win')
 win.init(hyperKeyMods)

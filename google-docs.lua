@@ -37,6 +37,14 @@ local function keyStrokes(text)
 end
 
 
+local function setNormalText()
+  keyStroke({"cmd", "option"}, "0")
+end
+local function setHeading(headingNum)
+  keyStroke({"cmd", "option"}, tostring(headingNum))
+end
+
+
 local function writeTime()
   local delay = default_delay
   local now = os.time()
@@ -46,7 +54,7 @@ local function writeTime()
     hourPart = hourPart - 12;
   end
   -- 6:44 PM
-  keyStroke({"cmd", "option"}, "0")
+  -- setNormalText()
   keyStrokes(os.date(hourPart..":%M %p:",  now))
 end
 
@@ -61,6 +69,9 @@ local function init(keyMods)
   hs.hotkey.bind(keyMods, "D", function ()
     writeDate()
   end)
+  hs.hotkey.bind(keyMods, "T", function ()
+    writeTime()
+  end)
 
   hs.hotkey.bind(keyMods, "N", function ()
     -- hs.eventtap.keyStroke({}, "return")
@@ -70,10 +81,14 @@ local function init(keyMods)
     keyStroke({}, "up")
     -- hs.timer.usleep(1000)
     -- keyStroke({"cmd", "option"}, "0")
+
+    setNormalText(3)
+    -- setHeading(3)
     writeTime()
     hs.timer.usleep(10000)
     keyStroke({}, "return")
     keyStroke({}, "tab")
+    setNormalText()
   end)
   
   hs.hotkey.bind(keyMods, "J", function ()
@@ -90,7 +105,7 @@ local function init(keyMods)
     keyStroke({"cmd"}, "up")
     keyStroke({}, "return")
     keyStroke({}, "up")
-    keyStroke({"cmd", "option"}, "2")
+    setHeading(2);
     -- Tues. Dec 27th, 2023
     hs.eventtap.keyStrokes(os.date("%a. %b "..dayPart..ordinal(now)..", %Y",  now))
     hs.timer.usleep(10000)
