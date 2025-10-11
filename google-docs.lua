@@ -22,12 +22,13 @@ local function ordinal(time)
   end
 end
 
--- default_delay = 1500-- microseconds
-default_delay = 10000-- microseconds
+--local default_delay = 1500-- microseconds
+-- local default_delay = 10000-- microseconds
+local default_delay = 20000-- microseconds
 
 local function keyStroke(keyMods, keyChar, delayUs)
   delayUs = delayUs or default_delay;
-  hs.eventtap.keyStroke(keyMods, keyChar, default_delay)
+  hs.eventtap.keyStroke(keyMods, keyChar, delayUs)
 
   -- hs.eventtap.event.newKeyEvent(keyMods, keyChar, true):post()
   -- hs.eventtap.event.newKeyEvent(keyMods, keyChar, false):post()
@@ -52,6 +53,8 @@ local function writeTime()
   local hourPart = timeTb["hour"]
   if hourPart > 12 then
     hourPart = hourPart - 12;
+  elseif hourPart == 0 then
+    hourPart = 12 --[[ 12 AM ]]
   end
   -- 6:44 PM
   -- setNormalText()
@@ -64,8 +67,36 @@ local function writeDate()
   keyStrokes(dateStr)
 end
 
+local function initDebug(keyMods, key)
+  local alertIds = nil
+
+  local pressedFn = function ()
+    local focusedWindow = hs.window.focusedWindow()
+    local jsStr = [[
+      (() => {
+        const str = "etc";
+        return str;
+      })();
+    ]]
+    local ok, jsRes, jsOut = hs.osascript.javascript(jsStr)
+    local alertStr = string.format("%s\n%s", focusedWindow:application(), jsRes)
+    alertIds = printUtil.alertAll(alertStr, true)
+  end
+  local releasedFn = function ()
+    if alertIds == nil then
+      return nil
+    end
+    for _, alertId in ipairs(alertIds) do
+      hs.alert.closeSpecific(alertId)
+    end
+  end
+
+  return hs.hotkey.bind(keyMods, "H", pressedFn, releasedFn)
+end
+
 local function init(keyMods)
-  
+  initDebug(keyMods, "H")
+
   hs.hotkey.bind(keyMods, "D", function ()
     writeDate()
   end)
@@ -74,23 +105,25 @@ local function init(keyMods)
   end)
 
   hs.hotkey.bind(keyMods, "N", function ()
+    local delay = default_delay
     -- hs.eventtap.keyStroke({}, "return")
     keyStroke({"cmd"}, "up")
+    hs.timer.usleep(delay)
     keyStroke({}, "down")
     keyStroke({}, "return")
     keyStroke({}, "up")
     -- hs.timer.usleep(1000)
     -- keyStroke({"cmd", "option"}, "0")
 
-    setNormalText(3)
-    -- setHeading(3)
+    -- setNormalText(3)
+    setHeading(3)
     writeTime()
     hs.timer.usleep(10000)
     keyStroke({}, "return")
-    keyStroke({}, "tab")
+    -- keyStroke({}, "tab")
     setNormalText()
   end)
-  
+
   hs.hotkey.bind(keyMods, "J", function ()
     local delay = default_delay
     hs.notify.new({title="google", informativeText="docs"}):send()
@@ -103,12 +136,13 @@ local function init(keyMods)
     local timeTb = os.date("*t", now)
     local dayPart = timeTb["day"]
     keyStroke({"cmd"}, "up")
+    hs.timer.usleep(delay)
     keyStroke({}, "return")
     keyStroke({}, "up")
     setHeading(2);
     -- Tues. Dec 27th, 2023
-    hs.eventtap.keyStrokes(os.date("%a. %b "..dayPart..ordinal(now)..", %Y",  now))
-    hs.timer.usleep(10000)
+    keyStrokes(os.date("%a. %b "..dayPart..ordinal(now)..", %Y",  now))
+    hs.timer.usleep(delay)
     keyStroke({}, "return")
   end)
 end

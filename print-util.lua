@@ -10,25 +10,33 @@ local function getAlertStr (alertText)
   return alertStr;
 end
 
-local function alert(alertText, screen)
-  hs.alert.show(
+local function alert(alertText, screen, seconds)
+  return hs.alert.show(
     getAlertStr(alertText),
     hs.alert.defaultStyle,
-    screen
+    screen,
+    seconds
   )
 end
 
-local function alertAll (alertText)
+local function alertAll (alertText, seconds)
   local allScreens = hs.screen.allScreens()
+  local alertIds = {}
+  if allScreens == nil then
+    return alertIds
+  end
   -- local verticalBanner = string.rep("~", string.len(configAlertText))..'\n'
   -- local verticalBanner = "\n"
   for _, currScreen in pairs(allScreens) do
-    hs.alert.show(
+    local currAlertId = hs.alert.show(
       getAlertStr(alertText),
       hs.alert.defaultStyle,
-      currScreen
+      currScreen,
+      seconds
     )
+    table.insert(alertIds, currAlertId)
   end
+  return alertIds
 end
 
 local function alertActive (alertText)
