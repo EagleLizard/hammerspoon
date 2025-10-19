@@ -1,36 +1,51 @@
+
+local obj = require "./util/obj"
+
+--[[
+  overrides for hs.alert.defaultStyle
+]]
+local defaultAlertStyle = {
+  textSize = 20,
+  radius = 16,
+  strokeColor = { white = 1, alpha = 0.75 },
+  textFont = "IBM Plex Mono",
+}
+
 local function getAlertStr (alertText)
-  local verticalBanner = '\n';
+  -- local verticalBanner = "\n";
+  local verticalBanner = "";
   local alertStr = (
     verticalBanner
-    .."\n"
     ..alertText
-    .."\n"
     ..verticalBanner
   )
   return alertStr;
 end
 
-local function alert(alertText, screen, seconds)
+local function alert(alertText, style, screen, seconds)
+  if style == nil then
+    style = defaultAlertStyle
+  else
+    style = obj.assign({}, defaultAlertStyle, style)
+  end
   return hs.alert.show(
     getAlertStr(alertText),
-    hs.alert.defaultStyle,
+    style,
     screen,
     seconds
   )
 end
 
-local function alertAll (alertText, seconds)
+local function alertAll(alertText, style, seconds)
   local allScreens = hs.screen.allScreens()
   local alertIds = {}
   if allScreens == nil then
     return alertIds
   end
-  -- local verticalBanner = string.rep("~", string.len(configAlertText))..'\n'
-  -- local verticalBanner = "\n"
   for _, currScreen in pairs(allScreens) do
-    local currAlertId = hs.alert.show(
-      getAlertStr(alertText),
-      hs.alert.defaultStyle,
+    local currAlertId = alert(
+      alertText,
+      style,
       currScreen,
       seconds
     )
@@ -39,13 +54,9 @@ local function alertAll (alertText, seconds)
   return alertIds
 end
 
-local function alertActive (alertText)
+local function alertActive (alertText, style, seconds)
   local currScreen = hs.mouse.getCurrentScreen()
-  hs.alert.show(
-    alertText,
-    hs.alert.defaultStyle,
-    currScreen
-  )
+  alert(alertText, style, currScreen, seconds)
 end
 
 local printUtil = {

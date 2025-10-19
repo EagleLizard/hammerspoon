@@ -80,7 +80,7 @@ local function initDebug(keyMods, key)
     ]]
     local ok, jsRes, jsOut = hs.osascript.javascript(jsStr)
     local alertStr = string.format("%s\n%s", focusedWindow:application(), jsRes)
-    alertIds = printUtil.alertAll(alertStr, true)
+    alertIds = printUtil.alertAll(alertStr)
   end
   local releasedFn = function ()
     if alertIds == nil then

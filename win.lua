@@ -58,15 +58,7 @@ local function moveMouseDirectional(direction)
     nextIdx = currIdx + direction
   end
   local nextScreen = allScreens[nextIdx]
-  -- if direction == -1 then
-  --   isCurrScreen = currIdx == 1
-  --   terminalIdx = #allScreens
-  --   nextScreen = currScreen.after()
-  -- else
-  --   isCurrScreen = currIdx == #allScreens
-  --   terminalIdx = 1
-  -- end
-  printUtil.alert('active screen', nextScreen);
+  printUtil.alert('active screen', nil, nextScreen);
   moveMouseRelative(currScreen, nextScreen)
 end
 

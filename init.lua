@@ -33,6 +33,9 @@ print(hyperKeyMods)
 local googleDocs = require('google-docs')
 googleDocs.init(googleDocsKeyMods);
 
+local docs2 = require "docs2"
+docs2.init(googleDocsKeyMods)
+
 
 mouseKeyMods = copy_table(hyperKeyMods)
 
