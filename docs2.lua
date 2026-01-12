@@ -15,6 +15,9 @@ Modal hotkeys:
     activated within N seconds, the mode should exit on its own.
     - heuristic for this is the amount of time I might space out
       after activating a mode trying to remember what I was doing
+Reference:
+  - Good discussion on managing hs.modal so that when a key that's not
+    valid is pressed, it exits the mode: https://github.com/Hammerspoon/hammerspoon/issues/848
 ]]
 
 local printUtil = require "print-util"
@@ -90,6 +93,10 @@ end
 local function writeDateIso()
   keyStrokes(getDateIso())
 end
+local function writePlainEntry()
+  local plainEntry = "_> "..getDateLong().." | "..dtUtil.getTimeStr()..":"
+  keyStrokes(plainEntry)
+end
 
 local function oneShot(mods, key, fn)
   doc_k:bind(mods, key, function ()
@@ -129,9 +136,9 @@ end
 
 local function init(keyMods)
   initMode(keyMods)
-
-  oneShot(keyMods, "J", writeDayEntry)
-  oneShot(keyMods, "N", writeTimeEntry)
+  oneShot("", "j", writePlainEntry)
+  -- oneShot(keyMods, "J", writeDayEntry)
+  -- oneShot(keyMods, "N", writeTimeEntry)
   oneShot('', "t", writeTime)
   oneShot('', "d", writeDate)
   oneShot('', "l", writeDateLong)
