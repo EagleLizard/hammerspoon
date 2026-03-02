@@ -50,35 +50,9 @@ local function getDateIso(time)
   return os.date("%Y-%m-%d", time)
 end
 
-local function setNormalText()
-  keyStroke({"cmd", "option"}, "0")
-end
-local function setHeading(headingNum)
-  keyStroke({"cmd", "option"}, tostring(headingNum))
-end
-
 local function writeTimeEntry()
-  local delay = default_delay_us
   local timeStr = dtUtil.getTimeStr()
-  keyStroke({}, "pagedown")
-  keyStroke({}, "return")
-  setHeading(2)
-  keyStrokes(timeStr..":")
-  hs.timer.doAfter(dtUtil.usToSecs(delay), function ()
-    keyStroke({}, "return")
-    setNormalText()
-  end)
-end
-
-local function writeDayEntry()
-  local delay = default_delay_us
-  keyStroke({}, "pagedown")
-  keyStroke({}, "return")
-  setHeading(1)
-  keyStrokes(getDateLong())
-  hs.timer.doAfter(dtUtil.usToSecs(delay), function ()
-    writeTimeEntry()
-  end)
+  keyStrokes("|> "..timeStr..":")
 end
 
 local function writeTime()
@@ -142,6 +116,7 @@ local function init(keyMods)
   oneShot('', "t", writeTime)
   oneShot('', "d", writeDate)
   oneShot('', "l", writeDateLong)
+  oneShot('', "n", writeTimeEntry)
   oneShot(keyMods, "I", writeDateIso)
 end
 
