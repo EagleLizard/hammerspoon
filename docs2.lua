@@ -22,21 +22,20 @@ Reference:
 
 local printUtil = require "print-util"
 local dtUtil = require "util.datetime-util"
+local etUtil = require "util.evttap-util"
 
-local default_delay_us = 20000 -- microseconds
+local default_delay_us = etUtil.default_delay_us
 local exit_timeout_secs = 5
 
 ---@type hs.hotkey.modal
 local doc_k
 local doc_kActive = false
 
-local function keyStroke(keyMods, keyChar, delayUs)
-  delayUs = delayUs or default_delay_us
-  hs.eventtap.keyStroke(keyMods, keyChar, delayUs)
-end
-local function keyStrokes(text)
-  hs.eventtap.keyStrokes(text)
-end
+local time_str_prefix = "|>"
+
+local doc_k_keys = {}
+
+local keyStrokes = etUtil.keyStrokes
 
 local function getDateLong(time)
   time = time or os.time()
@@ -52,7 +51,7 @@ end
 
 local function writeTimeEntry()
   local timeStr = dtUtil.getTimeStr()
-  keyStrokes("|> "..timeStr..":")
+  keyStrokes(time_str_prefix.." "..timeStr..":")
 end
 
 local function writeTime()
@@ -68,11 +67,12 @@ local function writeDateIso()
   keyStrokes(getDateIso())
 end
 local function writePlainEntry()
-  local plainEntry = "_> "..getDateLong().." | "..dtUtil.getTimeStr()..":"
+  local plainEntry = "_> "..getDateLong().." "..time_str_prefix.." "..dtUtil.getTimeStr()..":"
   keyStrokes(plainEntry)
 end
 
 local function oneShot(mods, key, fn)
+  doc_k_keys[key] = {}
   doc_k:bind(mods, key, function ()
     fn()
     doc_k:exit()
@@ -106,6 +106,25 @@ local function initMode(keyMods)
     doc_kActive = false
     printUtil.alertActive("exited docs2")
   end
+
+  local nonModeKeyFn = function(evt)
+    if not doc_kActive then
+      return false
+    end
+    local keyChar = evt:getCharacters()
+    local alertStr = "keyChar: "..keyChar
+    -- printUtil.alertActive(alertStr)
+    if doc_k_keys[keyChar] == nil then
+      doc_k:exit()
+      return false
+    end
+    return false -- don't intercept
+  end
+  local nonModeKeyTap = hs.eventtap.new({
+    hs.eventtap.event.types.keyDown
+  }, nonModeKeyFn)
+  nonModeKeyTap:start()
+
 end
 
 local function init(keyMods)
@@ -113,10 +132,10 @@ local function init(keyMods)
   oneShot("", "j", writePlainEntry)
   -- oneShot(keyMods, "J", writeDayEntry)
   -- oneShot(keyMods, "N", writeTimeEntry)
-  oneShot('', "t", writeTime)
-  oneShot('', "d", writeDate)
-  oneShot('', "l", writeDateLong)
-  oneShot('', "n", writeTimeEntry)
+  oneShot("", "t", writeTime)
+  oneShot("", "d", writeDate)
+  oneShot("", "l", writeDateLong)
+  oneShot("", "n", writeTimeEntry)
   oneShot(keyMods, "I", writeDateIso)
 end
 

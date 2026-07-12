@@ -29,7 +29,6 @@ hyperKeyMods = {"cmd", "alt", "ctrl", "shift" };
 
 googleDocsKeyMods = copy_table(hyperKeyMods);
 print(hyperKeyMods)
--- table.insert(googleDocsKeyMods, "J");
 local googleDocs = require('google-docs')
 googleDocs.init(googleDocsKeyMods);
 
@@ -54,24 +53,8 @@ win.init(hyperKeyMods)
 -- })
 
 local function showConfigMessage ()
-  local allScreens = hs.screen.allScreens()
   local configAlertText = "⚒️ Hammerspoon Configured ⚒️"
   printUtil.alertAll(configAlertText)
-  -- local verticalBanner = string.rep("⚒", string.len(configAlertText))
-  -- local verticalBanner = "\n"
-  -- for _, currScreen in pairs(allScreens) do
-  --   hs.alert.show(
-  --     (
-  --       verticalBanner
-  --       .."\n"
-  --       ..configAlertText
-  --       .."\n"
-  --       ..verticalBanner
-  --     ),
-  --     hs.alert.defaultStyle,
-  --     currScreen
-  --   )
-  -- end
 end
 
 showConfigMessage()
